@@ -39,7 +39,9 @@ class CIFARModel(nn.Module):
         # hidden layer
         self.linear1 = nn.Linear(in_size, hidden_size)
         # output layer
-        self.linear2 = nn.Linear(hidden_size, out_size)
+        self.linear2 = nn.Linear(hidden_size, hidden_size)
+        # output layer
+        self.linear3 = nn.Linear(hidden_size, out_size)
         
     def forward(self, xb):
         # Flatten the image tensors
@@ -48,8 +50,12 @@ class CIFARModel(nn.Module):
         out = self.linear1(xb)
         # Apply activation function
         out = F.relu(out)
-        # Get predictions using output layer
+        # Get intermediate outputs using hidden layer
         out = self.linear2(out)
+        # Apply activation function
+        out = F.relu(out)
+        # Get predictions using output layer
+        out = self.linear3(out)
         return out
     
     def training_step(self, batch):
@@ -157,6 +163,8 @@ history += fit(5, 0.5, model, train_loader, val_loader)
 
 history += fit(25, 0.1, model, train_loader, val_loader)
 
+history += fit(15, 0.05, model, train_loader, val_loader)
+
 losses = [x['val_loss'] for x in history]
 accuracies = [x['val_acc'] for x in history]
 
@@ -179,31 +187,30 @@ print(result)
 
 
 # Saving Model Parameters
-torch.save(model.state_dict(), 'mnist-nn-weights.pth')
+torch.save(model.state_dict(), 'cifar10-nn-weights.pth')
 
 # Sanity Check
-model2 = MNISTModel(input_size, hidden_size=hidden_size, out_size=num_classes)
-model2.load_state_dict(torch.load('mnist-nn-weights.pth'))
+model2 = CIFARModel(input_size, hidden_size=hidden_size, out_size=num_classes)
+model2.load_state_dict(torch.load('cifar10-nn-weights.pth'))
 model2.state_dict()
 
 test_loader = DataLoader(test_dataset, batch_size=256)
 result = evaluate(model2, test_loader)
 print(result)
 
-'''
 hyper_params = {
-	'arch': 'Linear(784, 128)+Linear(128,10)',
+	'arch': 'Linear(784, 128)+Linear(128,128)+Linear(128,10)',
 	'lr1': 0.5,
 	'lr2': 0.1,
-	'num_epochs': 30,
+	'num_epochs': 45,
 	'batch_size': 64
 }
 
 metrics = {
-	'val_acc': 0.9780,
-	'val_loss': 0.0802,
-	'test_acc': 0.9816,
-	'test_loss': 0.0659
+	'val_acc': 0.4151,
+	'val_loss': 1.6812,
+	'test_acc': 0.4128,
+	'test_loss': 1.6940.
 }
 
 import json
@@ -213,5 +220,5 @@ with open('hyper_params.json', 'w') as fp:
 
 with open('metrics.json', 'w') as fp:
     json.dump(metrics, fp)
-'''
+
 
