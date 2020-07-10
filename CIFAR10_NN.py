@@ -202,6 +202,7 @@ hyper_params = {
 	'arch': 'Linear(784, 128)+Linear(128,128)+Linear(128,10)',
 	'lr1': 0.5,
 	'lr2': 0.1,
+    'lr3': 0.05,
 	'num_epochs': 45,
 	'batch_size': 64
 }
@@ -210,7 +211,7 @@ metrics = {
 	'val_acc': 0.4151,
 	'val_loss': 1.6812,
 	'test_acc': 0.4128,
-	'test_loss': 1.6940
+	'test_loss': 1.6940.
 }
 
 import json
@@ -220,5 +221,5 @@ with open('hyper_params.json', 'w') as fp:
 
 with open('metrics.json', 'w') as fp:
     json.dump(metrics, fp)
-
+'''
 
