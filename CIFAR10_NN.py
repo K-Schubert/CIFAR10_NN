@@ -210,7 +210,7 @@ metrics = {
 	'val_acc': 0.4151,
 	'val_loss': 1.6812,
 	'test_acc': 0.4128,
-	'test_loss': 1.6940.
+	'test_loss': 1.6940
 }
 
 import json
